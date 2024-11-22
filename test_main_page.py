@@ -5,5 +5,5 @@ def test_guest_can_go_to_login_page(browser):
     link = "http://selenium1py.pythonanywhere.com/"
     page = MainPage(browser, link)
     page.open()
-    page.go_to_login_page()  # используем метод из Page Object
-
+    page.should_be_login_link()  # проверяем наличие логин-ссылки
+    page.go_to_login_page()  # переходим на страницу логина
