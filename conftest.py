@@ -59,8 +59,3 @@ def browser(request):
 
     print("\nQuit browser...")
     browser.quit()
-
-
-
-
-
