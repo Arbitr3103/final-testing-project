@@ -10,5 +10,4 @@ class MainPage(BasePage):
         login_link.click()
 
     def should_be_login_link(self):
-        # Проверяем, что элемент с локатором LOGIN_LINK присутствует на странице
         assert self.is_element_present(*self.LOGIN_LINK), "Login link is not presented"
