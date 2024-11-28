@@ -2,8 +2,14 @@ from selenium.webdriver.common.by import By
 
 
 class BasePageLocators:
-    LOGIN_LINK = (By.CSS_SELECTOR, "#login_link")
-    LOGIN_LINK_INVALID = (By.CSS_SELECTOR, "#login_link_inc")
+    LOGIN_LINK = (By.CSS_SELECTOR, "#login_link")  # Локатор для ссылки на логин
+    LOGIN_LINK_INVALID = (By.CSS_SELECTOR, "#login_link_inc")  # Локатор для невалидной ссылки
+    BASKET_LINK = (By.CSS_SELECTOR, ".basket-mini .btn-group > a")  # Локатор для ссылки на корзину
+
+
+class BasketPageLocators:
+    BASKET_ITEMS = (By.CSS_SELECTOR, ".basket-items")  # Локатор для элементов в корзине
+    EMPTY_BASKET_MESSAGE = (By.CSS_SELECTOR, "#content_inner > p")  # Локатор для сообщения "Корзина пуста"
 
 
 class MainPageLocators:
