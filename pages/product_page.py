@@ -8,24 +8,29 @@ from .locators import ProductPageLocators
 
 class ProductPage(BasePage):
     def add_to_basket(self):
-        """Кликает на кнопку добавления в корзину"""
-        add_button = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_BUTTON)
+        """Кликает на кнопку добавления в корзину, ожидая её появления"""
+        add_button = WebDriverWait(self.browser, 10).until(
+            EC.element_to_be_clickable(ProductPageLocators.ADD_TO_BASKET_BUTTON)
+        )
         add_button.click()
 
-    def solve_quiz_and_get_code(self):
-        """Решает задачу в алерте, если она появляется"""
-        alert = self.browser.switch_to.alert
-        x = alert.text.split(" ")[2]
-        answer = str(math.log(abs((12 * math.sin(float(x))))))
-        alert.send_keys(answer)
-        alert.accept()
-        try:
-            alert = self.browser.switch_to.alert
-            alert_text = alert.text
-            print(f"Your code: {alert_text}")
-            alert.accept()
-        except NoAlertPresentException:
-            print("No second alert presented")
+    # def solve_quiz_and_get_code(self):
+    #     """Решает задачу в алерте, если она появляется"""
+    #     try:
+    #         alert = self.browser.switch_to.alert
+    #         x = alert.text.split(" ")[2]
+    #         answer = str(math.log(abs((12 * math.sin(float(x))))))
+    #         alert.send_keys(answer)
+    #         alert.accept()
+    #         try:
+    #             alert = self.browser.switch_to.alert
+    #             alert_text = alert.text
+    #             print(f"Your code: {alert_text}")
+    #             alert.accept()
+    #         except NoAlertPresentException:
+    #             print("No second alert presented")
+    #     except NoAlertPresentException:
+    #         print("No alert present initially")
 
     def get_product_name(self):
         """Возвращает название товара со страницы товара"""
@@ -68,3 +73,27 @@ class ProductPage(BasePage):
         except:
             return False
         return True
+
+    def should_be_correct_product_in_basket(self):
+        """Проверка, что добавленный товар соответствует тому, что в корзине"""
+        # Получение названия продукта с продуктовой страницы
+        product_name = self.get_product_name()
+        print(f"Product name from product page: {product_name}")
+
+        # Получение названия продукта из сообщения корзины
+        basket_message = self.get_basket_message()
+        print(f"Product name from basket message: {basket_message}")
+
+        # Проверка совпадения названия
+        assert product_name == basket_message, f"Expected product name '{product_name}', but got '{basket_message}'"
+
+        # Получение цены продукта с продуктовой страницы
+        product_price = self.get_product_price()
+        print(f"Product price from product page: {product_price}")
+
+        # Получение цены продукта из сообщения корзины
+        basket_price = self.get_basket_price()
+        print(f"Product price from basket message: {basket_price}")
+
+        # Проверка совпадения цены
+        assert product_price == basket_price, f"Expected basket price '{product_price}', but got '{basket_price}'"

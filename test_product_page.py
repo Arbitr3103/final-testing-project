@@ -1,6 +1,8 @@
 import pytest
 from pages.product_page import ProductPage
 from pages.basket_page import BasketPage
+from pages.login_page import LoginPage
+import time
 
 
 @pytest.mark.parametrize('link', [
@@ -20,7 +22,7 @@ def test_guest_can_add_product_to_basket(browser, link):
     page = ProductPage(browser, link)
     page.open()
     page.add_to_basket()
-    page.solve_quiz_and_get_code()
+    # page.solve_quiz_and_get_code()
     product_name = page.get_product_name()
     basket_message = page.get_basket_message()
     assert product_name == basket_message, "Product name in basket does not match the added product"
@@ -77,3 +79,27 @@ def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     basket_page.should_be_empty_basket()
     basket_page.should_be_empty_basket_message()
 
+
+@pytest.mark.user
+class TestUserActionsOnProductPage:
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser):
+        self.login_page = LoginPage(browser, "http://selenium1py.pythonanywhere.com/accounts/login/")
+        self.login_page.open()
+
+    @pytest.mark.new_user
+    def test_register_new_user(self, browser):
+        # Генерируем случайный email для регистрации
+        email = str(time.time()) + "@fakemail.org"
+        password = "securepassword123"
+        self.login_page.register_new_user(email, password)
+        self.login_page.should_be_authorized_user()
+        print(f"New user registered: {email}")
+
+    @pytest.mark.existing_user
+    def test_registered_user_can_login(self, browser):
+        # Данные заранее зарегистрированного пользователя
+        email = "existing_user@example.com"
+        password = "securepassword123"
+        self.login_page.login_user(email, password)
+        self.login_page.should_be_authorized_user()
